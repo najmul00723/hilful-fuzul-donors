@@ -1,0 +1,22 @@
+{
+  "name": "হিলফুল ফুজুল যুব সংঘ - রক্তদান",
+  "short_name": "রক্তদান",
+  "description": "হিলফুল ফুজুল যুব সংঘ বেগমপুর এর রক্তদান কর্মসূচি ওয়েব অ্যাপ।",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://i.ibb.co/kgTr50WZ/ic-launcher192.png/192x192/dc2626/ffffff?text=HF",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "https://i.ibb.co/HptG237n/playstore-icon.png/512x512/dc2626/ffffff?text=HF",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}

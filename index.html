@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>হিলফুল ফুজুল যুব সংঘ বেগমপুর - রক্তদান কর্মসূচি</title>
+    
+    <!-- PWA Manifest and Theme Color -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#dc2626">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Hind Siliguri', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .modal {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+        .status-ready {
+            color: #16a34a; /* green-600 */
+            background-color: #dcfce7; /* green-100 */
+            border: 1px solid #4ade80; /* green-400 */
+        }
+        .status-not-ready {
+            color: #dc2626; /* red-600 */
+            background-color: #fee2e2; /* red-100 */
+            border: 1px solid #f87171; /* red-400 */
+        }
+        .group-badge {
+            font-weight: 700;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+        }
+        .group-a-pos { background-color: #ef4444; color: white; }
+        .group-a-neg { background-color: #ef4444; color: white; border: 2px dashed white; }
+        .group-b-pos { background-color: #f97316; color: white; }
+        .group-b-neg { background-color: #f97316; color: white; border: 2px dashed white; }
+        .group-ab-pos { background-color: #8b5cf6; color: white; }
+        .group-ab-neg { background-color: #8b5cf6; color: white; border: 2px dashed white; }
+        .group-o-pos { background-color: #22c55e; color: white; }
+        .group-o-neg { background-color: #22c55e; color: white; border: 2px dashed white; }
+    </style>
+</head>
+<body class="antialiased text-gray-800">
+
+    <!-- Logo Watermark -->
+    <div class="fixed inset-0 flex items-center justify-center -z-10 pointer-events-none">
+        <img src="https://i.ibb.co/q3Sq4MWC/hilful-fiul-logo-final-2005-001-F.png/400x400/ffffff/cccccc?text=হিলফুল-ফুজুল-যুব-সংঘ-বেগমপুর" alt="হিলফুল ফুজুল যুব সংঘ বেগমপুর" class="w-2/3 md:w-1/3 max-w-md opacity-5">
+    </div>
+
+    <!-- Header -->
+    <header class="bg-white shadow-md sticky top-0 z-20">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl md:text-3xl font-bold text-red-600">হিলফুল ফুজুল যুব সংঘ বেগমপুর</h1>
+                <p class="text-sm md:text-base text-gray-600 mt-1">"ইসলামের আলোয় আলোকিত হই, মানবতার সেবায় নিবেদিত হই!"</p>
+            </div>
+            <div id="auth-container">
+                 <button id="login-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">অ্যাডমিন লগইন</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto p-4 md:p-6">
+        <!-- Search Bar -->
+        <div class="mb-6">
+            <div class="relative">
+                <input type="text" id="search-bar" class="w-full p-4 pl-12 border border-gray-300 rounded-full shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500" placeholder="নাম, রক্তের গ্রুপ, ঠিকানা দিয়ে খুঁজুন...">
+                <div class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400">
+                    <i data-lucide="search"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Donor List -->
+        <div id="donor-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Donor cards will be inserted here by JavaScript -->
+        </div>
+        <div id="loading-spinner" class="text-center py-10">
+            <p class="text-lg">লোড হচ্ছে...</p>
+        </div>
+        <div id="no-results" class="text-center py-10 hidden">
+            <p class="text-lg text-gray-500">কোনো ফলাফল পাওয়া যায়নি।</p>
+        </div>
+
+    </main>
+    
+    <!-- Admin Panel (Hidden by default) -->
+    <div id="admin-panel" class="hidden bg-gray-100 p-6 rounded-lg shadow-lg container mx-auto mb-8">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold">অ্যাডমিন প্যানেল</h2>
+            <button id="logout-btn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">লগআউট</button>
+        </div>
+        
+        <form id="donor-form" class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold mb-4" id="form-title">নতুন ডোনার যোগ করুন</h3>
+            <input type="hidden" id="donor-id">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <input type="text" id="name" placeholder="নাম" class="p-2 border rounded w-full" required>
+                <input type="text" id="father-name" placeholder="পিতার নাম" class="p-2 border rounded w-full">
+                <select id="blood-group" class="p-2 border rounded w-full" required>
+                    <option value="">রক্তের গ্রুপ নির্বাচন করুন</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                </select>
+                <input type="tel" id="phone" placeholder="মোবাইল নম্বর" class="p-2 border rounded w-full" required>
+                <input type="text" id="address" placeholder="ঠিকানা" class="p-2 border rounded w-full md:col-span-2">
+                <div>
+                    <label for="last-donation" class="block text-sm font-medium text-gray-700">শেষ রক্তদানের তারিখ (ঐচ্ছিক)</label>
+                    <input type="date" id="last-donation" class="p-2 border rounded w-full mt-1">
+                </div>
+            </div>
+            <div class="mt-6 flex gap-4">
+                <button type="submit" id="submit-btn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">ডোনার যোগ করুন</button>
+                <button type="button" id="cancel-btn" class="bg-gray-400 text-white px-6 py-2 rounded-lg hover:bg-gray-500 transition hidden">বাতিল</button>
+            </div>
+        </form>
+    </div>
+
+
+    <!-- Modals -->
+    <!-- Donor Details Modal -->
+    <div id="details-modal" class="fixed inset-0 z-30 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md modal transform scale-95 opacity-0" id="details-modal-content">
+            <!-- Content will be injected by JS -->
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-40 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm p-8 modal transform scale-95 opacity-0" id="login-modal-content">
+            <h2 class="text-2xl font-bold text-center mb-6">অ্যাডমিন লগইন</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="email" class="block mb-2">ইমেইল</label>
+                    <input type="email" id="email" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="mb-6">
+                    <label for="password" class="block mb-2">পাসওয়ার্ড</label>
+                    <input type="password" id="password" class="w-full p-2 border rounded" required>
+                </div>
+                <p id="login-error" class="text-red-500 text-center mb-4"></p>
+                <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">লগইন</button>
+            </form>
+            <button id="close-login-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Register Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                    })
+                    .catch(err => {
+                        console.error('Service Worker registration failed:', err);
+                    });
+            });
+        }
+    </script>
+
+    <script type="module">
+        // IMPORTANT: Replace with your actual Firebase config object
+        const firebaseConfig = {
+            apiKey: "AIzaSyBHdTb8iu0N6CNmOKQYA38wSNpBVWffy1Y",
+            authDomain: "hilful-fuzul-donors.firebaseapp.com",
+            projectId: "hilful-fuzul-donors",
+            storageBucket: "hilful-fuzul-donors.appspot.com",
+            messagingSenderId: "948184322374",
+            appId: "1:948184322374:web:2bb7f133380159bdaf5547"
+        };
+
+        // Import Firebase services
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, doc, getDoc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        const donorsCollection = collection(db, "donors");
+        let allDonors = [];
+
+        // UI Elements
+        const donorListEl = document.getElementById('donor-list');
+        const searchBar = document.getElementById('search-bar');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const noResults = document.getElementById('no-results');
+        const detailsModal = document.getElementById('details-modal');
+        const detailsModalContent = document.getElementById('details-modal-content');
+        const loginModal = document.getElementById('login-modal');
+        const loginModalContent = document.getElementById('login-modal-content');
+        const loginBtn = document.getElementById('login-btn');
+        const closeLoginModalBtn = document.getElementById('close-login-modal');
+        const loginForm = document.getElementById('login-form');
+        const loginError = document.getElementById('login-error');
+        const authContainer = document.getElementById('auth-container');
+        const adminPanel = document.getElementById('admin-panel');
+        const logoutBtn = document.getElementById('logout-btn');
+        const donorForm = document.getElementById('donor-form');
+        
+        // --- Authentication ---
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                // User is signed in
+                adminPanel.classList.remove('hidden');
+                authContainer.innerHTML = `<span class="text-sm font-semibold">স্বাগতম, অ্যাডমিন</span>`;
+                loginBtn.classList.add('hidden');
+            } else {
+                // User is signed out
+                adminPanel.classList.add('hidden');
+                authContainer.innerHTML = `<button id="login-btn-re-init" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">অ্যাডমিন লগইন</button>`;
+                document.getElementById('login-btn-re-init').addEventListener('click', () => toggleModal(loginModal, loginModalContent, true));
+                loginBtn.classList.remove('hidden');
+            }
+        });
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = loginForm.email.value;
+            const password = loginForm.password.value;
+            loginError.textContent = '';
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                toggleModal(loginModal, loginModalContent, false);
+                loginForm.reset();
+            } catch (error) {
+                loginError.textContent = 'ইমেইল বা পাসওয়ার্ড ভুল হয়েছে।';
+                console.error("Login Error:", error.message);
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            await signOut(auth);
+        });
+
+        // --- Modal Logic ---
+        const toggleModal = (modal, content, show) => {
+            if (show) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    content.classList.remove('scale-95', 'opacity-0');
+                }, 10);
+            } else {
+                content.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+        };
+
+        loginBtn.addEventListener('click', () => toggleModal(loginModal, loginModalContent, true));
+        closeLoginModalBtn.addEventListener('click', () => toggleModal(loginModal, loginModalContent, false));
+        detailsModal.addEventListener('click', (e) => {
+            if (e.target === detailsModal) {
+                toggleModal(detailsModal, detailsModalContent, false);
+            }
+        });
+        
+        // --- Blood Group Badge Class ---
+        const getGroupClass = (group) => {
+            const sanitizedGroup = group.replace('+', '-pos').replace('-', '-neg');
+            return `group-${sanitizedGroup.toLowerCase()}`;
+        };
+
+        // --- Data Fetching and Rendering ---
+        const renderDonors = (donors) => {
+            donorListEl.innerHTML = '';
+            loadingSpinner.classList.add('hidden');
+
+            if (donors.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            }
+            noResults.classList.add('hidden');
+
+            // Sort by blood group
+            const bloodGroupOrder = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+            donors.sort((a, b) => {
+                return bloodGroupOrder.indexOf(a.group) - bloodGroupOrder.indexOf(b.group);
+            });
+
+            donors.forEach(donor => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-4 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform cursor-pointer';
+                card.dataset.id = donor.id;
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h3 class="text-lg font-bold mb-2">${donor.name}</h3>
+                        <span class="group-badge ${getGroupClass(donor.group)}">${donor.group}</span>
+                    </div>
+                    <p class="text-gray-600 text-sm flex items-center gap-2"><i data-lucide="map-pin" class="w-4 h-4"></i> ${donor.address}</p>
+                    <p class="text-gray-600 text-sm flex items-center gap-2 mt-1"><i data-lucide="phone" class="w-4 h-4"></i> ${donor.phone}</p>
+                `;
+                card.addEventListener('click', () => showDonorDetails(donor.id));
+                donorListEl.appendChild(card);
+            });
+            lucide.createIcons();
+        };
+
+        const q = query(donorsCollection);
+        onSnapshot(q, (snapshot) => {
+            allDonors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            filterAndRender();
+        }, (error) => {
+            console.error("Error fetching donors:", error);
+            loadingSpinner.textContent = "তথ্য আনতে সমস্যা হচ্ছে।";
+        });
+
+        // --- Search and Filter ---
+        searchBar.addEventListener('keyup', filterAndRender);
+
+        function filterAndRender() {
+            const searchTerm = searchBar.value.toLowerCase().trim();
+            if (!searchTerm) {
+                renderDonors(allDonors);
+                return;
+            }
+            const filteredDonors = allDonors.filter(donor => {
+                return (
+                    donor.name.toLowerCase().includes(searchTerm) ||
+                    donor.group.toLowerCase().replace('+', ' pos').replace('-', ' neg').includes(searchTerm) ||
+                    donor.address.toLowerCase().includes(searchTerm) ||
+                    donor.fatherName.toLowerCase().includes(searchTerm) ||
+                    donor.phone.includes(searchTerm)
+                );
+            });
+            renderDonors(filteredDonors);
+        }
+
+        // --- Show Donor Details ---
+        const showDonorDetails = async (id) => {
+            try {
+                const docRef = doc(db, "donors", id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const donor = { id: docSnap.id, ...docSnap.data() };
+                    
+                    let statusHTML = '';
+                    if (donor.lastDonation) {
+                        const lastDonationDate = new Date(donor.lastDonation);
+                        const nextEligibleDate = new Date(lastDonationDate);
+                        nextEligibleDate.setMonth(nextEligibleDate.getMonth() + 4);
+                        
+                        const today = new Date();
+                        
+                        if (today >= nextEligibleDate) {
+                            statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-ready">ডোনার রক্ত দানে প্রস্তুত</div>`;
+                        } else {
+                            const formattedNextDate = nextEligibleDate.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+                            statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-not-ready">ডোনারের রক্ত দানের সময় পূর্ণ হয়নি।<br/>(পরবর্তী সম্ভাব্য তারিখ: ${formattedNextDate})</div>`;
+                        }
+                    }
+
+                    detailsModalContent.innerHTML = `
+                        <div class="p-6">
+                            <div class="flex justify-between items-center pb-3 border-b">
+                                <h2 class="text-2xl font-bold">${donor.name}</h2>
+                                <span class="group-badge ${getGroupClass(donor.group)}">${donor.group}</span>
+                            </div>
+                            <div class="mt-4 space-y-2">
+                                <p><strong>পিতার নাম:</strong> ${donor.fatherName}</p>
+                                <p><strong>ঠিকানা:</strong> ${donor.address}</p>
+                                <p><strong>শেষ রক্তদান:</strong> ${donor.lastDonation ? new Date(donor.lastDonation).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
+                                <a href="tel:${donor.phone}" class="mt-4 w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
+                                    <i data-lucide="phone-call"></i>
+                                    <span>${donor.phone} (কল করুন)</span>
+                                </a>
+                            </div>
+                            ${statusHTML}
+                            ${auth.currentUser ? `
+                            <div class="mt-6 pt-4 border-t flex justify-end gap-2">
+                                <button class="edit-btn bg-yellow-500 text-white px-4 py-2 rounded-lg" data-id="${donor.id}">এডিট</button>
+                                <button class="delete-btn bg-red-600 text-white px-4 py-2 rounded-lg" data-id="${donor.id}">ডিলিট</button>
+                            </div>
+                            ` : ''}
+                        </div>
+                        <button id="close-details-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
+                            <i data-lucide="x"></i>
+                        </button>
+                    `;
+                    lucide.createIcons();
+                    
+                    document.getElementById('close-details-modal').addEventListener('click', () => toggleModal(detailsModal, detailsModalContent, false));
+                    
+                    if (auth.currentUser) {
+                        document.querySelector('.edit-btn').addEventListener('click', (e) => handleEdit(e.target.dataset.id));
+                        document.querySelector('.delete-btn').addEventListener('click', (e) => handleDelete(e.target.dataset.id));
+                    }
+
+                    toggleModal(detailsModal, detailsModalContent, true);
+                } else {
+                    console.log("No such document!");
+                }
+            } catch (error) {
+                console.error("Error getting document:", error);
+            }
+        };
+
+        // --- CRUD Operations for Admin ---
+        donorForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const donorId = document.getElementById('donor-id').value;
+            const donorData = {
+                name: document.getElementById('name').value,
+                fatherName: document.getElementById('father-name').value,
+                group: document.getElementById('blood-group').value,
+                phone: document.getElementById('phone').value,
+                address: document.getElementById('address').value,
+                lastDonation: document.getElementById('last-donation').value || null,
+            };
+
+            try {
+                if (donorId) {
+                    // Update existing donor
+                    const docRef = doc(db, "donors", donorId);
+                    await updateDoc(docRef, donorData);
+                } else {
+                    // Add new donor
+                    await addDoc(donorsCollection, donorData);
+                }
+                donorForm.reset();
+                resetForm();
+            } catch (error) {
+                console.error("Error saving donor:", error);
+                alert("তথ্য সংরক্ষণ করতে সমস্যা হয়েছে।");
+            }
+        });
+        
+        const handleEdit = async (id) => {
+            toggleModal(detailsModal, detailsModalContent, false);
+            const donor = allDonors.find(d => d.id === id);
+            if (donor) {
+                document.getElementById('donor-id').value = donor.id;
+                document.getElementById('name').value = donor.name;
+                document.getElementById('father-name').value = donor.fatherName;
+                document.getElementById('blood-group').value = donor.group;
+                document.getElementById('phone').value = donor.phone;
+                document.getElementById('address').value = donor.address;
+                document.getElementById('last-donation').value = donor.lastDonation || '';
+                
+                document.getElementById('form-title').textContent = 'ডোনারের তথ্য আপডেট করুন';
+                document.getElementById('submit-btn').textContent = 'আপডেট করুন';
+                document.getElementById('submit-btn').classList.replace('bg-green-600', 'bg-blue-600');
+                document.getElementById('cancel-btn').classList.remove('hidden');
+                
+                adminPanel.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+
+        const handleDelete = async (id) => {
+            if (confirm('আপনি কি নিশ্চিতভাবে এই ডোনারকে মুছে ফেলতে চান?')) {
+                try {
+                    await deleteDoc(doc(db, "donors", id));
+                    toggleModal(detailsModal, detailsModalContent, false);
+                } catch (error) {
+                    console.error("Error deleting donor:", error);
+                    alert("ডোনারকে মুছতে সমস্যা হয়েছে।");
+                }
+            }
+        };
+
+        document.getElementById('cancel-btn').addEventListener('click', resetForm);
+
+        function resetForm() {
+            donorForm.reset();
+            document.getElementById('donor-id').value = '';
+            document.getElementById('form-title').textContent = 'নতুন ডোনার যোগ করুন';
+            document.getElementById('submit-btn').textContent = 'ডোনার যোগ করুন';
+            document.getElementById('submit-btn').classList.replace('bg-blue-600', 'bg-green-600');
+            document.getElementById('cancel-btn').classList.add('hidden');
+        }
+
+        // Initial render
+        lucide.createIcons();
+    </script>
+</body>
+</html>
