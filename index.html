@@ -64,8 +64,9 @@
                 <h1 class="text-xl md:text-3xl font-bold text-red-600">হিলফুল ফুজুল যুব সংঘ বেগমপুর</h1>
                 <p class="text-sm md:text-base text-gray-600 mt-1">"ইসলামের আলোয় আলোকিত হই, মানবতার সেবায় নিবেদিত হই!"</p>
             </div>
-            <div id="auth-container">
+            <div id="auth-container" class="text-right">
                  <button id="login-btn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">অ্যাডমিন লগইন</button>
+                 <p class="text-xs text-gray-500 mt-1">নিজের তথ্য যোগ করতে প্রাইভেট গ্রুপে মেসেজ করুন</p>
             </div>
         </div>
     </header>
@@ -229,14 +230,14 @@
         // --- Authentication ---
         onAuthStateChanged(auth, user => {
             if (user) {
+                // User is signed in
                 adminPanel.classList.remove('hidden');
                 authContainer.innerHTML = `<span class="text-sm font-semibold">স্বাগতম, অ্যাডমিন</span>`;
-                loginBtn.classList.add('hidden');
             } else {
+                // User is signed out
                 adminPanel.classList.add('hidden');
-                authContainer.innerHTML = `<button id="login-btn-re-init" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">অ্যাডমিন লগইন</button>`;
+                authContainer.innerHTML = `<div class="text-right"><button id="login-btn-re-init" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">অ্যাডমিন লগইন</button><p class="text-xs text-gray-500 mt-1">নিজের তথ্য যোগ করতে প্রাইভেট গ্রুপে মেসেজ করুন</p></div>`;
                 document.getElementById('login-btn-re-init').addEventListener('click', () => toggleModal(loginModal, loginModalContent, true));
-                loginBtn.classList.remove('hidden');
             }
         });
 
@@ -273,8 +274,10 @@
                 }, 300);
             }
         };
-
+        
+        // Initial login button event listener
         loginBtn.addEventListener('click', () => toggleModal(loginModal, loginModalContent, true));
+
         closeLoginModalBtn.addEventListener('click', () => toggleModal(loginModal, loginModalContent, false));
         detailsModal.addEventListener('click', (e) => {
             if (e.target === detailsModal) {
@@ -347,9 +350,9 @@
             const filteredDonors = allDonors.filter(donor => {
                 return (
                     donor.name.toLowerCase().includes(searchTerm) ||
-                    donor.group.toLowerCase().includes(searchTerm) || // Corrected search logic
+                    donor.group.toLowerCase().includes(searchTerm) ||
                     donor.address.toLowerCase().includes(searchTerm) ||
-                    (donor.fatherName && donor.fatherName.toLowerCase().includes(searchTerm)) || // Added safety check
+                    (donor.fatherName && donor.fatherName.toLowerCase().includes(searchTerm)) ||
                     donor.phone.includes(searchTerm)
                 );
             });
