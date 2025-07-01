@@ -47,6 +47,7 @@
         .group-ab-neg { background-color: #8b5cf6; color: white; border: 2px dashed white; }
         .group-o-pos { background-color: #22c55e; color: white; }
         .group-o-neg { background-color: #22c55e; color: white; border: 2px dashed white; }
+        .group-unknown { background-color: #6b7280; color: white; } /* gray-500 */
     </style>
 </head>
 <body class="antialiased text-gray-800">
@@ -117,6 +118,7 @@
                     <option value="AB-">AB-</option>
                     <option value="O+">O+</option>
                     <option value="O-">O-</option>
+                    <option value="জানা নেই">জানা নেই</option>
                 </select>
                 <input type="tel" id="phone" placeholder="মোবাইল নম্বর" class="p-2 border rounded w-full" required>
                 <input type="text" id="address" placeholder="ঠিকানা" class="p-2 border rounded w-full md:col-span-2">
@@ -282,6 +284,9 @@
         
         // --- Blood Group Badge Class ---
         const getGroupClass = (group) => {
+            if (group === 'জানা নেই') {
+                return 'group-unknown';
+            }
             const sanitizedGroup = group.replace('+', '-pos').replace('-', '-neg');
             return `group-${sanitizedGroup.toLowerCase()}`;
         };
@@ -297,7 +302,7 @@
             }
             noResults.classList.add('hidden');
 
-            const bloodGroupOrder = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
+            const bloodGroupOrder = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'জানা নেই'];
             donors.sort((a, b) => {
                 return bloodGroupOrder.indexOf(a.group) - bloodGroupOrder.indexOf(b.group);
             });
