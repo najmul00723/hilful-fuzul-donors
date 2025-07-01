@@ -347,9 +347,9 @@
             const filteredDonors = allDonors.filter(donor => {
                 return (
                     donor.name.toLowerCase().includes(searchTerm) ||
-                    donor.group.toLowerCase().replace('+', ' pos').replace('-', ' neg').includes(searchTerm) ||
+                    donor.group.toLowerCase().includes(searchTerm) || // Corrected search logic
                     donor.address.toLowerCase().includes(searchTerm) ||
-                    donor.fatherName.toLowerCase().includes(searchTerm) ||
+                    (donor.fatherName && donor.fatherName.toLowerCase().includes(searchTerm)) || // Added safety check
                     donor.phone.includes(searchTerm)
                 );
             });
