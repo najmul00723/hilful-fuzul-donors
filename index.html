@@ -121,6 +121,10 @@
                 <input type="tel" id="phone" placeholder="মোবাইল নম্বর" class="p-2 border rounded w-full" required>
                 <input type="text" id="address" placeholder="ঠিকানা" class="p-2 border rounded w-full md:col-span-2">
                 <div>
+                    <label for="dob" class="block text-sm font-medium text-gray-700">জন্ম তারিখ</label>
+                    <input type="date" id="dob" class="p-2 border rounded w-full mt-1">
+                </div>
+                <div>
                     <label for="last-donation" class="block text-sm font-medium text-gray-700">শেষ রক্তদানের তারিখ (ঐচ্ছিক)</label>
                     <input type="date" id="last-donation" class="p-2 border rounded w-full mt-1">
                 </div>
@@ -223,12 +227,10 @@
         // --- Authentication ---
         onAuthStateChanged(auth, user => {
             if (user) {
-                // User is signed in
                 adminPanel.classList.remove('hidden');
                 authContainer.innerHTML = `<span class="text-sm font-semibold">স্বাগতম, অ্যাডমিন</span>`;
                 loginBtn.classList.add('hidden');
             } else {
-                // User is signed out
                 adminPanel.classList.add('hidden');
                 authContainer.innerHTML = `<button id="login-btn-re-init" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">অ্যাডমিন লগইন</button>`;
                 document.getElementById('login-btn-re-init').addEventListener('click', () => toggleModal(loginModal, loginModalContent, true));
@@ -295,7 +297,6 @@
             }
             noResults.classList.add('hidden');
 
-            // Sort by blood group
             const bloodGroupOrder = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'];
             donors.sort((a, b) => {
                 return bloodGroupOrder.indexOf(a.group) - bloodGroupOrder.indexOf(b.group);
@@ -359,7 +360,24 @@
                     const donor = { id: docSnap.id, ...docSnap.data() };
                     
                     let statusHTML = '';
-                    if (donor.lastDonation) {
+                    let isEligibleByAge = true;
+
+                    if (donor.dob) {
+                        const dob = new Date(donor.dob);
+                        const today = new Date();
+                        let age = today.getFullYear() - dob.getFullYear();
+                        const monthDiff = today.getMonth() - dob.getMonth();
+                        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                            age--;
+                        }
+                        
+                        if (age < 18) {
+                            isEligibleByAge = false;
+                            statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-not-ready">রক্ত দান করতে ১৮ বছর পূর্ণ হওয়া পর্যন্ত অপেক্ষা করুন।</div>`;
+                        }
+                    }
+
+                    if (isEligibleByAge && donor.lastDonation) {
                         const lastDonationDate = new Date(donor.lastDonation);
                         const nextEligibleDate = new Date(lastDonationDate);
                         nextEligibleDate.setMonth(nextEligibleDate.getMonth() + 4);
@@ -383,6 +401,7 @@
                             <div class="mt-4 space-y-2">
                                 <p><strong>পিতার নাম:</strong> ${donor.fatherName}</p>
                                 <p><strong>ঠিকানা:</strong> ${donor.address}</p>
+                                <p><strong>জন্ম তারিখ:</strong> ${donor.dob ? new Date(donor.dob).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
                                 <p><strong>শেষ রক্তদান:</strong> ${donor.lastDonation ? new Date(donor.lastDonation).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
                                 <a href="tel:${donor.phone}" class="mt-4 w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
                                     <i data-lucide="phone-call"></i>
@@ -429,6 +448,7 @@
                 group: document.getElementById('blood-group').value,
                 phone: document.getElementById('phone').value,
                 address: document.getElementById('address').value,
+                dob: document.getElementById('dob').value || null,
                 lastDonation: document.getElementById('last-donation').value || null,
             };
 
@@ -459,6 +479,7 @@
                 document.getElementById('blood-group').value = donor.group;
                 document.getElementById('phone').value = donor.phone;
                 document.getElementById('address').value = donor.address;
+                document.getElementById('dob').value = donor.dob || '';
                 document.getElementById('last-donation').value = donor.lastDonation || '';
                 
                 document.getElementById('form-title').textContent = 'ডোনারের তথ্য আপডেট করুন';
