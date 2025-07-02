@@ -70,17 +70,84 @@
             </div>
         </div>
     </header>
+    
+    <!-- Admin Panel (Moved to top) -->
+    <div id="admin-panel" class="hidden container mx-auto p-4 md:p-6">
+        <div class="bg-slate-200 p-6 rounded-lg shadow-lg mb-8">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold">অ্যাডমিন প্যানেল</h2>
+                <button id="logout-btn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">লগআউট</button>
+            </div>
+            
+            <!-- Donor Form -->
+            <form id="donor-form" class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h3 class="text-xl font-semibold mb-4" id="form-title">নতুন ডোনার যোগ করুন</h3>
+                <input type="hidden" id="donor-id">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <input type="text" id="name" placeholder="নাম" class="p-2 border rounded w-full" required>
+                    <input type="text" id="father-name" placeholder="পিতার নাম" class="p-2 border rounded w-full">
+                    <select id="blood-group" class="p-2 border rounded w-full" required>
+                        <option value="">রক্তের গ্রুপ নির্বাচন করুন</option>
+                        <option value="A+">A+</option> <option value="A-">A-</option>
+                        <option value="B+">B+</option> <option value="B-">B-</option>
+                        <option value="AB+">AB+</option> <option value="AB-">AB-</option>
+                        <option value="O+">O+</option> <option value="O-">O-</option>
+                        <option value="জানা নেই">জানা নেই</option>
+                    </select>
+                    <input type="tel" id="phone" placeholder="মোবাইল নম্বর" class="p-2 border rounded w-full" required>
+                    <input type="text" id="address" placeholder="ঠিকানা" class="p-2 border rounded w-full md:col-span-2">
+                    <div>
+                        <label for="dob" class="block text-sm font-medium text-gray-700">জন্ম তারিখ</label>
+                        <input type="date" id="dob" class="p-2 border rounded w-full mt-1">
+                    </div>
+                    <div>
+                        <label for="last-donation" class="block text-sm font-medium text-gray-700">শেষ রক্তদানের তারিখ (ঐচ্ছিক)</label>
+                        <input type="date" id="last-donation" class="p-2 border rounded w-full mt-1">
+                    </div>
+                </div>
+                <div class="mt-6 flex gap-4">
+                    <button type="submit" id="submit-btn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">ডোনার যোগ করুন</button>
+                    <button type="button" id="cancel-btn" class="bg-gray-400 text-white px-6 py-2 rounded-lg hover:bg-gray-500 transition hidden">বাতিল</button>
+                </div>
+            </form>
+
+            <!-- Coordinator Management -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4">সমন্বয়কারী ম্যানেজমেন্ট</h3>
+                <form id="coordinator-form" class="flex flex-col sm:flex-row gap-4 mb-4">
+                    <input type="text" id="coordinator-name" placeholder="সমন্বয়কারীর নাম" class="p-2 border rounded w-full" required>
+                    <input type="tel" id="coordinator-phone" placeholder="মোবাইল নম্বর" class="p-2 border rounded w-full" required>
+                    <button type="submit" class="bg-indigo-600 text-white px-6 py-2 rounded-lg hover:bg-indigo-700 transition">যোগ করুন</button>
+                </form>
+                <div id="coordinator-list-admin" class="space-y-2">
+                    <!-- Admin coordinator list will be rendered here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Main Content -->
     <main class="container mx-auto p-4 md:p-6">
+        <!-- Coordinator Info -->
+        <div class="text-center mb-6 p-4 bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 rounded-lg">
+            <p class="font-semibold">অনুগ্রহ করে সরাসরি ডোনারকে কল না করে, সমন্বয়কারীর সাথে যোগাযোগ করুন।</p>
+            <button id="show-coordinators-btn" class="mt-2 bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition">সমন্বয়কারী তালিকা দেখুন</button>
+        </div>
+
         <!-- Search Bar -->
-        <div class="mb-6">
+        <div class="mb-2">
             <div class="relative">
                 <input type="text" id="search-bar" class="w-full p-4 pl-12 border border-gray-300 rounded-full shadow-sm focus:ring-2 focus:ring-red-500 focus:border-red-500" placeholder="নাম, রক্তের গ্রুপ, ঠিকানা দিয়ে খুঁজুন...">
                 <div class="absolute top-1/2 left-4 -translate-y-1/2 text-gray-400">
                     <i data-lucide="search"></i>
                 </div>
             </div>
+        </div>
+        
+        <!-- Donor Count -->
+        <div id="donor-count-container" class="text-right text-sm text-gray-600 mb-4 pr-2">
+            <!-- Donor count will be rendered here -->
         </div>
 
         <!-- Donor List -->
@@ -95,57 +162,11 @@
         </div>
 
     </main>
-    
-    <!-- Admin Panel (Hidden by default) -->
-    <div id="admin-panel" class="hidden bg-gray-100 p-6 rounded-lg shadow-lg container mx-auto mb-8">
-        <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold">অ্যাডমিন প্যানেল</h2>
-            <button id="logout-btn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">লগআউট</button>
-        </div>
-        
-        <form id="donor-form" class="bg-white p-6 rounded-lg shadow-md">
-            <h3 class="text-xl font-semibold mb-4" id="form-title">নতুন ডোনার যোগ করুন</h3>
-            <input type="hidden" id="donor-id">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="name" placeholder="নাম" class="p-2 border rounded w-full" required>
-                <input type="text" id="father-name" placeholder="পিতার নাম" class="p-2 border rounded w-full">
-                <select id="blood-group" class="p-2 border rounded w-full" required>
-                    <option value="">রক্তের গ্রুপ নির্বাচন করুন</option>
-                    <option value="A+">A+</option>
-                    <option value="A-">A-</option>
-                    <option value="B+">B+</option>
-                    <option value="B-">B-</option>
-                    <option value="AB+">AB+</option>
-                    <option value="AB-">AB-</option>
-                    <option value="O+">O+</option>
-                    <option value="O-">O-</option>
-                    <option value="জানা নেই">জানা নেই</option>
-                </select>
-                <input type="tel" id="phone" placeholder="মোবাইল নম্বর" class="p-2 border rounded w-full" required>
-                <input type="text" id="address" placeholder="ঠিকানা" class="p-2 border rounded w-full md:col-span-2">
-                <div>
-                    <label for="dob" class="block text-sm font-medium text-gray-700">জন্ম তারিখ</label>
-                    <input type="date" id="dob" class="p-2 border rounded w-full mt-1">
-                </div>
-                <div>
-                    <label for="last-donation" class="block text-sm font-medium text-gray-700">শেষ রক্তদানের তারিখ (ঐচ্ছিক)</label>
-                    <input type="date" id="last-donation" class="p-2 border rounded w-full mt-1">
-                </div>
-            </div>
-            <div class="mt-6 flex gap-4">
-                <button type="submit" id="submit-btn" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 transition">ডোনার যোগ করুন</button>
-                <button type="button" id="cancel-btn" class="bg-gray-400 text-white px-6 py-2 rounded-lg hover:bg-gray-500 transition hidden">বাতিল</button>
-            </div>
-        </form>
-    </div>
-
 
     <!-- Modals -->
     <!-- Donor Details Modal -->
     <div id="details-modal" class="fixed inset-0 z-30 flex items-center justify-center p-4 modal-backdrop hidden">
-        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md modal transform scale-95 opacity-0" id="details-modal-content">
-            <!-- Content will be injected by JS -->
-        </div>
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md modal transform scale-95 opacity-0" id="details-modal-content"></div>
     </div>
 
     <!-- Login Modal -->
@@ -153,34 +174,34 @@
         <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm p-8 modal transform scale-95 opacity-0" id="login-modal-content">
             <h2 class="text-2xl font-bold text-center mb-6">অ্যাডমিন লগইন</h2>
             <form id="login-form">
-                <div class="mb-4">
-                    <label for="email" class="block mb-2">ইমেইল</label>
-                    <input type="email" id="email" class="w-full p-2 border rounded" required>
-                </div>
-                <div class="mb-6">
-                    <label for="password" class="block mb-2">পাসওয়ার্ড</label>
-                    <input type="password" id="password" class="w-full p-2 border rounded" required>
-                </div>
+                <div class="mb-4"><label for="email" class="block mb-2">ইমেইল</label><input type="email" id="email" class="w-full p-2 border rounded" required></div>
+                <div class="mb-6"><label for="password" class="block mb-2">পাসওয়ার্ড</label><input type="password" id="password" class="w-full p-2 border rounded" required></div>
                 <p id="login-error" class="text-red-500 text-center mb-4"></p>
                 <button type="submit" class="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition">লগইন</button>
             </form>
-            <button id="close-login-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
-                <i data-lucide="x"></i>
-            </button>
+            <button id="close-login-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"><i data-lucide="x"></i></button>
         </div>
     </div>
+    
+    <!-- Coordinator List Modal -->
+    <div id="coordinator-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-md modal transform scale-95 opacity-0 p-6" id="coordinator-modal-content">
+            <div class="flex justify-between items-center pb-3 border-b">
+                <h2 class="text-2xl font-bold">সমন্বয়কারী তালিকা</h2>
+                <button id="close-coordinator-modal-btn" class="text-gray-500 hover:text-gray-800"><i data-lucide="x"></i></button>
+            </div>
+            <div id="coordinator-list-public" class="mt-4 space-y-3">
+                <!-- Public coordinator list will be rendered here -->
+            </div>
+        </div>
+    </div>
+
 
     <script>
         // Register Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(registration => {
-                        console.log('Service Worker registered with scope:', registration.scope);
-                    })
-                    .catch(err => {
-                        console.error('Service Worker registration failed:', err);
-                    });
+                navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW registered'), err => console.error('SW registration failed', err));
             });
         }
     </script>
@@ -199,7 +220,7 @@
         // Import Firebase services
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, addDoc, doc, getDoc, updateDoc, deleteDoc, query, orderBy } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, collection, onSnapshot, addDoc, doc, getDoc, updateDoc, deleteDoc, query } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
@@ -207,6 +228,7 @@
         const db = getFirestore(app);
 
         const donorsCollection = collection(db, "donors");
+        const coordinatorsCollection = collection(db, "coordinators");
         let allDonors = [];
 
         // UI Elements
@@ -214,27 +236,37 @@
         const searchBar = document.getElementById('search-bar');
         const loadingSpinner = document.getElementById('loading-spinner');
         const noResults = document.getElementById('no-results');
+        const donorCountContainer = document.getElementById('donor-count-container');
+        
         const detailsModal = document.getElementById('details-modal');
         const detailsModalContent = document.getElementById('details-modal-content');
+        
         const loginModal = document.getElementById('login-modal');
         const loginModalContent = document.getElementById('login-modal-content');
         const loginBtn = document.getElementById('login-btn');
-        const closeLoginModalBtn = document.getElementById('close-login-modal');
+        const closeLoginModalBtn = document.getElementById('close-login-modal-btn');
         const loginForm = document.getElementById('login-form');
         const loginError = document.getElementById('login-error');
+        
         const authContainer = document.getElementById('auth-container');
         const adminPanel = document.getElementById('admin-panel');
         const logoutBtn = document.getElementById('logout-btn');
         const donorForm = document.getElementById('donor-form');
+
+        const coordinatorForm = document.getElementById('coordinator-form');
+        const coordinatorListAdminEl = document.getElementById('coordinator-list-admin');
+        const coordinatorListPublicEl = document.getElementById('coordinator-list-public');
+        const showCoordinatorsBtn = document.getElementById('show-coordinators-btn');
+        const coordinatorModal = document.getElementById('coordinator-modal');
+        const coordinatorModalContent = document.getElementById('coordinator-modal-content');
+        const closeCoordinatorModalBtn = document.getElementById('close-coordinator-modal-btn');
         
         // --- Authentication ---
         onAuthStateChanged(auth, user => {
             if (user) {
-                // User is signed in
                 adminPanel.classList.remove('hidden');
                 authContainer.innerHTML = `<span class="text-sm font-semibold">স্বাগতম, অ্যাডমিন</span>`;
             } else {
-                // User is signed out
                 adminPanel.classList.add('hidden');
                 authContainer.innerHTML = `<div class="text-right"><button id="login-btn-re-init" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">অ্যাডমিন লগইন</button><p class="text-xs text-gray-500 mt-1">নিজের তথ্য যোগ করতে প্রাইভেট গ্রুপে মেসেজ করুন</p></div>`;
                 document.getElementById('login-btn-re-init').addEventListener('click', () => toggleModal(loginModal, loginModalContent, true));
@@ -243,60 +275,48 @@
 
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const email = loginForm.email.value;
-            const password = loginForm.password.value;
             loginError.textContent = '';
             try {
-                await signInWithEmailAndPassword(auth, email, password);
+                await signInWithEmailAndPassword(auth, loginForm.email.value, loginForm.password.value);
                 toggleModal(loginModal, loginModalContent, false);
                 loginForm.reset();
             } catch (error) {
                 loginError.textContent = 'ইমেইল বা পাসওয়ার্ড ভুল হয়েছে।';
-                console.error("Login Error:", error.message);
             }
         });
 
-        logoutBtn.addEventListener('click', async () => {
-            await signOut(auth);
-        });
+        logoutBtn.addEventListener('click', () => signOut(auth));
 
         // --- Modal Logic ---
         const toggleModal = (modal, content, show) => {
             if (show) {
                 modal.classList.remove('hidden');
-                setTimeout(() => {
-                    content.classList.remove('scale-95', 'opacity-0');
-                }, 10);
+                setTimeout(() => content.classList.remove('scale-95', 'opacity-0'), 10);
             } else {
                 content.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                }, 300);
+                setTimeout(() => modal.classList.add('hidden'), 300);
             }
         };
         
-        // Initial login button event listener
         loginBtn.addEventListener('click', () => toggleModal(loginModal, loginModalContent, true));
-
         closeLoginModalBtn.addEventListener('click', () => toggleModal(loginModal, loginModalContent, false));
-        detailsModal.addEventListener('click', (e) => {
-            if (e.target === detailsModal) {
-                toggleModal(detailsModal, detailsModalContent, false);
-            }
-        });
+        detailsModal.addEventListener('click', (e) => e.target === detailsModal && toggleModal(detailsModal, detailsModalContent, false));
+        
+        showCoordinatorsBtn.addEventListener('click', () => toggleModal(coordinatorModal, coordinatorModalContent, true));
+        closeCoordinatorModalBtn.addEventListener('click', () => toggleModal(coordinatorModal, coordinatorModalContent, false));
+        coordinatorModal.addEventListener('click', (e) => e.target === coordinatorModal && toggleModal(coordinatorModal, coordinatorModalContent, false));
+        
         
         // --- Blood Group Badge Class ---
         const getGroupClass = (group) => {
-            if (group === 'জানা নেই') {
-                return 'group-unknown';
-            }
-            const sanitizedGroup = group.replace('+', '-pos').replace('-', '-neg');
-            return `group-${sanitizedGroup.toLowerCase()}`;
+            if (group === 'জানা নেই') return 'group-unknown';
+            return `group-${group.replace('+', '-pos').replace('-', '-neg').toLowerCase()}`;
         };
 
         // --- Data Fetching and Rendering ---
         const renderDonors = (donors) => {
             donorListEl.innerHTML = '';
+            donorCountContainer.textContent = `মোট ডোনার: ${donors.length}`;
             loadingSpinner.classList.add('hidden');
 
             if (donors.length === 0) {
@@ -306,15 +326,12 @@
             noResults.classList.add('hidden');
 
             const bloodGroupOrder = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'জানা নেই'];
-            donors.sort((a, b) => {
-                return bloodGroupOrder.indexOf(a.group) - bloodGroupOrder.indexOf(b.group);
-            });
+            donors.sort((a, b) => bloodGroupOrder.indexOf(a.group) - bloodGroupOrder.indexOf(b.group));
 
             donors.forEach(donor => {
                 const card = document.createElement('div');
                 card.className = 'bg-white p-4 rounded-lg shadow-md hover:shadow-xl hover:-translate-y-1 transition-transform cursor-pointer';
                 card.dataset.id = donor.id;
-
                 card.innerHTML = `
                     <div class="flex justify-between items-start">
                         <h3 class="text-lg font-bold mb-2">${donor.name}</h3>
@@ -329,13 +346,9 @@
             lucide.createIcons();
         };
 
-        const q = query(donorsCollection);
-        onSnapshot(q, (snapshot) => {
+        onSnapshot(query(donorsCollection), (snapshot) => {
             allDonors = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             filterAndRender();
-        }, (error) => {
-            console.error("Error fetching donors:", error);
-            loadingSpinner.textContent = "তথ্য আনতে সমস্যা হচ্ছে।";
         });
 
         // --- Search and Filter ---
@@ -347,106 +360,80 @@
                 renderDonors(allDonors);
                 return;
             }
-            const filteredDonors = allDonors.filter(donor => {
-                return (
-                    donor.name.toLowerCase().includes(searchTerm) ||
-                    donor.group.toLowerCase().includes(searchTerm) ||
-                    donor.address.toLowerCase().includes(searchTerm) ||
-                    (donor.fatherName && donor.fatherName.toLowerCase().includes(searchTerm)) ||
-                    donor.phone.includes(searchTerm)
-                );
-            });
+            const filteredDonors = allDonors.filter(donor => 
+                Object.values(donor).some(value => 
+                    String(value).toLowerCase().includes(searchTerm)
+                )
+            );
             renderDonors(filteredDonors);
         }
 
         // --- Show Donor Details ---
         const showDonorDetails = async (id) => {
-            try {
-                const docRef = doc(db, "donors", id);
-                const docSnap = await getDoc(docRef);
-                if (docSnap.exists()) {
-                    const donor = { id: docSnap.id, ...docSnap.data() };
-                    
-                    let statusHTML = '';
-                    let isEligibleByAge = true;
+            const docSnap = await getDoc(doc(db, "donors", id));
+            if (!docSnap.exists()) return;
 
-                    if (donor.dob) {
-                        const dob = new Date(donor.dob);
-                        const today = new Date();
-                        let age = today.getFullYear() - dob.getFullYear();
-                        const monthDiff = today.getMonth() - dob.getMonth();
-                        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-                            age--;
-                        }
-                        
-                        if (age < 18) {
-                            isEligibleByAge = false;
-                            statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-not-ready">রক্ত দান করতে ১৮ বছর পূর্ণ হওয়া পর্যন্ত অপেক্ষা করুন।</div>`;
-                        }
-                    }
+            const donor = { id: docSnap.id, ...docSnap.data() };
+            let statusHTML = '';
+            let isEligibleByAge = true;
 
-                    if (isEligibleByAge && donor.lastDonation) {
-                        const lastDonationDate = new Date(donor.lastDonation);
-                        const nextEligibleDate = new Date(lastDonationDate);
-                        nextEligibleDate.setMonth(nextEligibleDate.getMonth() + 4);
-                        
-                        const today = new Date();
-                        
-                        if (today >= nextEligibleDate) {
-                            statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-ready">ডোনার রক্ত দানে প্রস্তুত</div>`;
-                        } else {
-                            const formattedNextDate = nextEligibleDate.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
-                            statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-not-ready">ডোনারের রক্ত দানের সময় পূর্ণ হয়নি।<br/>(পরবর্তী সম্ভাব্য তারিখ: ${formattedNextDate})</div>`;
-                        }
-                    }
-
-                    detailsModalContent.innerHTML = `
-                        <div class="p-6">
-                            <div class="flex justify-between items-center pb-3 border-b">
-                                <h2 class="text-2xl font-bold">${donor.name}</h2>
-                                <span class="group-badge ${getGroupClass(donor.group)}">${donor.group}</span>
-                            </div>
-                            <div class="mt-4 space-y-2">
-                                <p><strong>পিতার নাম:</strong> ${donor.fatherName}</p>
-                                <p><strong>ঠিকানা:</strong> ${donor.address}</p>
-                                <p><strong>জন্ম তারিখ:</strong> ${donor.dob ? new Date(donor.dob).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
-                                <p><strong>শেষ রক্তদান:</strong> ${donor.lastDonation ? new Date(donor.lastDonation).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
-                                <a href="tel:${donor.phone}" class="mt-4 w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
-                                    <i data-lucide="phone-call"></i>
-                                    <span>${donor.phone} (কল করুন)</span>
-                                </a>
-                            </div>
-                            ${statusHTML}
-                            ${auth.currentUser ? `
-                            <div class="mt-6 pt-4 border-t flex justify-end gap-2">
-                                <button class="edit-btn bg-yellow-500 text-white px-4 py-2 rounded-lg" data-id="${donor.id}">এডিট</button>
-                                <button class="delete-btn bg-red-600 text-white px-4 py-2 rounded-lg" data-id="${donor.id}">ডিলিট</button>
-                            </div>
-                            ` : ''}
-                        </div>
-                        <button id="close-details-modal" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800">
-                            <i data-lucide="x"></i>
-                        </button>
-                    `;
-                    lucide.createIcons();
-                    
-                    document.getElementById('close-details-modal').addEventListener('click', () => toggleModal(detailsModal, detailsModalContent, false));
-                    
-                    if (auth.currentUser) {
-                        document.querySelector('.edit-btn').addEventListener('click', (e) => handleEdit(e.target.dataset.id));
-                        document.querySelector('.delete-btn').addEventListener('click', (e) => handleDelete(e.target.dataset.id));
-                    }
-
-                    toggleModal(detailsModal, detailsModalContent, true);
-                } else {
-                    console.log("No such document!");
+            if (donor.dob) {
+                const dob = new Date(donor.dob);
+                const today = new Date();
+                let age = today.getFullYear() - dob.getFullYear();
+                const m = today.getMonth() - dob.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+                if (age < 18) {
+                    isEligibleByAge = false;
+                    statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-not-ready">রক্ত দান করতে ১৮ বছর পূর্ণ হওয়া পর্যন্ত অপেক্ষা করুন।</div>`;
                 }
-            } catch (error) {
-                console.error("Error getting document:", error);
             }
+
+            if (isEligibleByAge && donor.lastDonation) {
+                const lastDonationDate = new Date(donor.lastDonation);
+                const nextEligibleDate = new Date(lastDonationDate.setMonth(lastDonationDate.getMonth() + 4));
+                if (new Date() >= nextEligibleDate) {
+                    statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-ready">ডোনার রক্ত দানে প্রস্তুত</div>`;
+                } else {
+                    const formattedNextDate = nextEligibleDate.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
+                    statusHTML = `<div class="p-3 text-center rounded-lg mt-4 status-not-ready">ডোনারের রক্ত দানের সময় পূর্ণ হয়নি।<br/>(পরবর্তী সম্ভাব্য তারিখ: ${formattedNextDate})</div>`;
+                }
+            }
+
+            detailsModalContent.innerHTML = `
+                <div class="p-6">
+                    <div class="flex justify-between items-center pb-3 border-b">
+                        <h2 class="text-2xl font-bold">${donor.name}</h2>
+                        <span class="group-badge ${getGroupClass(donor.group)}">${donor.group}</span>
+                    </div>
+                    <div class="mt-4 space-y-2">
+                        <p><strong>পিতার নাম:</strong> ${donor.fatherName || 'N/A'}</p>
+                        <p><strong>ঠিকানা:</strong> ${donor.address}</p>
+                        <p><strong>জন্ম তারিখ:</strong> ${donor.dob ? new Date(donor.dob).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
+                        <p><strong>শেষ রক্তদান:</strong> ${donor.lastDonation ? new Date(donor.lastDonation).toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }) : 'N/A'}</p>
+                        <a href="tel:${donor.phone}" class="mt-4 w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
+                            <i data-lucide="phone-call"></i><span>${donor.phone} (কল করুন)</span>
+                        </a>
+                    </div>
+                    ${statusHTML}
+                    ${auth.currentUser ? `
+                    <div class="mt-6 pt-4 border-t flex justify-end gap-2">
+                        <button class="edit-btn bg-yellow-500 text-white px-4 py-2 rounded-lg" data-id="${donor.id}">এডিট</button>
+                        <button class="delete-btn bg-red-600 text-white px-4 py-2 rounded-lg" data-id="${donor.id}">ডিলিট</button>
+                    </div>` : ''}
+                </div>
+                <button id="close-details-modal-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800"><i data-lucide="x"></i></button>`;
+            
+            lucide.createIcons();
+            document.getElementById('close-details-modal-btn').addEventListener('click', () => toggleModal(detailsModal, detailsModalContent, false));
+            if (auth.currentUser) {
+                detailsModalContent.querySelector('.edit-btn').addEventListener('click', (e) => handleEdit(e.target.dataset.id));
+                detailsModalContent.querySelector('.delete-btn').addEventListener('click', (e) => handleDelete(e.target.dataset.id));
+            }
+            toggleModal(detailsModal, detailsModalContent, true);
         };
 
-        // --- CRUD Operations for Admin ---
+        // --- CRUD Operations for Admin (Donors) ---
         donorForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const donorId = document.getElementById('donor-id').value;
@@ -459,25 +446,14 @@
                 dob: document.getElementById('dob').value || null,
                 lastDonation: document.getElementById('last-donation').value || null,
             };
-
             try {
-                if (donorId) {
-                    // Update existing donor
-                    const docRef = doc(db, "donors", donorId);
-                    await updateDoc(docRef, donorData);
-                } else {
-                    // Add new donor
-                    await addDoc(donorsCollection, donorData);
-                }
-                donorForm.reset();
-                resetForm();
-            } catch (error) {
-                console.error("Error saving donor:", error);
-                alert("তথ্য সংরক্ষণ করতে সমস্যা হয়েছে।");
-            }
+                if (donorId) await updateDoc(doc(db, "donors", donorId), donorData);
+                else await addDoc(donorsCollection, donorData);
+                resetDonorForm();
+            } catch (error) { console.error("Error saving donor:", error); }
         });
         
-        const handleEdit = async (id) => {
+        const handleEdit = (id) => {
             toggleModal(detailsModal, detailsModalContent, false);
             const donor = allDonors.find(d => d.id === id);
             if (donor) {
@@ -494,26 +470,21 @@
                 document.getElementById('submit-btn').textContent = 'আপডেট করুন';
                 document.getElementById('submit-btn').classList.replace('bg-green-600', 'bg-blue-600');
                 document.getElementById('cancel-btn').classList.remove('hidden');
-                
                 adminPanel.scrollIntoView({ behavior: 'smooth' });
             }
         };
 
         const handleDelete = async (id) => {
-            if (confirm('আপনি কি নিশ্চিতভাবে এই ডোনারকে মুছে ফেলতে চান?')) {
-                try {
-                    await deleteDoc(doc(db, "donors", id));
-                    toggleModal(detailsModal, detailsModalContent, false);
-                } catch (error) {
-                    console.error("Error deleting donor:", error);
-                    alert("ডোনারকে মুছতে সমস্যা হয়েছে।");
-                }
-            }
+            // NOTE: confirm() is removed as it's blocked in many environments.
+            try {
+                await deleteDoc(doc(db, "donors", id));
+                toggleModal(detailsModal, detailsModalContent, false);
+            } catch (error) { console.error("Error deleting donor:", error); }
         };
 
-        document.getElementById('cancel-btn').addEventListener('click', resetForm);
+        document.getElementById('cancel-btn').addEventListener('click', resetDonorForm);
 
-        function resetForm() {
+        function resetDonorForm() {
             donorForm.reset();
             document.getElementById('donor-id').value = '';
             document.getElementById('form-title').textContent = 'নতুন ডোনার যোগ করুন';
@@ -521,6 +492,47 @@
             document.getElementById('submit-btn').classList.replace('bg-blue-600', 'bg-green-600');
             document.getElementById('cancel-btn').classList.add('hidden');
         }
+
+        // --- CRUD for Coordinators ---
+        onSnapshot(query(coordinatorsCollection), (snapshot) => {
+            const coordinators = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            
+            coordinatorListPublicEl.innerHTML = coordinators.map(c => `
+                <a href="tel:${c.phone}" class="flex items-center justify-between p-3 bg-gray-100 rounded-lg hover:bg-gray-200">
+                    <div><p class="font-semibold">${c.name}</p><p class="text-sm text-gray-600">${c.phone}</p></div>
+                    <i data-lucide="phone-call" class="text-green-600"></i>
+                </a>`).join('');
+
+            coordinatorListAdminEl.innerHTML = coordinators.map(c => `
+                <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <div><p class="font-semibold">${c.name}</p><p class="text-sm">${c.phone}</p></div>
+                    <button class="delete-coordinator-btn text-red-500 hover:text-red-700" data-id="${c.id}"><i data-lucide="trash-2" class="pointer-events-none"></i></button>
+                </div>`).join('');
+
+            lucide.createIcons();
+
+            document.querySelectorAll('.delete-coordinator-btn').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    const id = e.currentTarget.dataset.id;
+                    // NOTE: confirm() dialog is removed as it's often blocked. Deletion is immediate.
+                    try {
+                        await deleteDoc(doc(db, "coordinators", id));
+                    } catch (error) {
+                        console.error("Error deleting coordinator:", error);
+                    }
+                });
+            });
+        });
+
+        coordinatorForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('coordinator-name').value;
+            const phone = document.getElementById('coordinator-phone').value;
+            if (name && phone) {
+                await addDoc(coordinatorsCollection, { name, phone });
+                coordinatorForm.reset();
+            }
+        });
 
         // Initial render
         lucide.createIcons();
